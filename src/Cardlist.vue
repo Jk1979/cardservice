@@ -67,9 +67,10 @@ export default {
   },
   watch: {
     // эта функция запускается при любом изменении вопроса
-    newcard: function (newVal) {
-       console.log(this.newcard);
-       this.cards.push(this.newcard)
+    newcard: function (val) {
+        let vm = this;
+       console.log(val);
+       vm.cards.push(val)
     }
   },
   methods: {
