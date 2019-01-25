@@ -1,36 +1,41 @@
 <?php
+ini_set('display_errors', 'On');
+error_reporting(E_ALL);
 
 require_once('core.php');
 
 
 $request = $_SERVER['REQUEST_URI'];
-
+$params='';
 switch ($request) {
     case '/' :
          $controller = 'Controller\Main';
          $action='index';
         break;
-    
-    default: 
+
+    default:
         $uridata = explode('/',$request);
+
         if(count($uridata)==2) {
-            $controller = 'Controller\\'.$uridata[1];
+            $controller = 'Controller\\'.ucfirst($uridata[1]);
             $action = 'index';
         }
         elseif(count($uridata)>2){
-            $controller = 'Controller\\'.$uridata[1];
+
+            $controller = 'Controller\\'.ucfirst($uridata[1]);
             $action = $uridata[2];
             if(strpos($action,'?')!==FALSE) {
                 $arr = explode('?',$action);
                 $action = $arr[0];
                 $params = $arr[1];
-                
             }
         }
-       
-        else { header('HTTP/1.0 404 Not Found', true, 404); die; }
-       
-        
+
+        else {
+
+          header('HTTP/1.0 404 Not Found', true, 404);
+          die;
+        }
         break;
 }
 
@@ -43,9 +48,9 @@ if(isset($_SERVER['HTTP_X_REQUESTED_WITH']) && !empty($_SERVER['HTTP_X_REQUESTED
     $data =  $controller->$action();
     if(is_array($data)) echo json_encode($data);
     else echo $data;
-    exit(); 
+    exit();
 }
 
- 
+
 require('index.html');
 exit();

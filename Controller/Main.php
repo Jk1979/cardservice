@@ -12,7 +12,7 @@ class Main{
    $newparam = [];
     if(!empty($this->params)){
      foreach($this->params as $p){
-      if(strpos($p,'=')!==FALSE) $tmp = explode('=',$p);  
+      if(strpos($p,'=')!==FALSE) $tmp = explode('=',$p);
       $newparam[$tmp[0]] = $tmp[1];
      }
      $this->params = $newparam;
@@ -26,18 +26,18 @@ class Main{
   public function getcards(){
     if(!empty($this->params) && $this->params['sort']) {
         $sort = !empty($this->params['sort']) ? $this->params['sort'] : 'serie';
-    } 
+    }
     //$sort = isset($_GET['sort']) ? $_GET['sort'] : 'serie';
     $sortcount = false;
     if($sort === 'countorders') {
       $sort = 'serie';
       $sortcount = true;
-    } 
+    }
     $result = $this->db->query("select * from `cards` as c order by c.$sort ASC");
-    
+
     $cards = [];
     $status = ['не активирована','активирована','просрочена'];
-    
+
       $i=0;
         $rows = $result->rows();
       foreach($rows as &$row){
@@ -51,7 +51,7 @@ class Main{
      $row['sql'] = $result->sql();
      $row['sortcount'] = $sortcount;
      $cards[] =$row;
-    
+
      $i++;
     }
 
@@ -68,13 +68,13 @@ class Main{
      $data = json_decode(file_get_contents("php://input"), TRUE);
      $data = $data['data'];
      $data['bonus'] = 1000;
-     $data['created_at'] = date('Y-m-d H:i:s', strtotime('now'));  
-     $data['active_until'] = date('Y-m-d H:i:s', strtotime('+ 1 year'));  
-     $table = $this->db->table('cards'); 
+     $data['created_at'] = date('Y-m-d H:i:s', strtotime('now'));
+     $data['active_until'] = date('Y-m-d H:i:s', strtotime('+ 1 year'));
+     $table = $this->db->table('cards');
      $id = $table->insert($data);
      $sum = $data['sum'];
      $bonus = $data['bonus'];
-     if($sum<1) return $data; 
+     if($sum<1) return $data;
       $ordcount = rand(3, 10);
       while($ordcount>0){
         $order = $this->db->table('cardorders');
@@ -85,7 +85,7 @@ class Main{
           'cost' => rand(1,$sum),
           'bonus' => rand(1,$bonus),
           'used_at' => $used
-        );  
+        );
         $ordid = $order->insert($orderdata);
         $sum = $sum - $orderdata['cost'];
         $bonus = $bonus - $orderdata['bonus'];
@@ -111,8 +111,8 @@ class Main{
     $id = !empty($this->params['id']) ? $this->params['id'] : null;
     if(!$id) return '';
     $result = $this->db->query("select * from `cardorders` where `card_id`=$id")->rows();
-    foreach($result as &$r) { 
-      $r['status'] = $status[$r['status']]; 
+    foreach($result as &$r) {
+      $r['status'] = $status[$r['status']];
       $r['used_at'] =  date('d-m-Y', strtotime($r['used_at']));
     }
     return $result;
@@ -122,11 +122,9 @@ class Main{
     $num = !empty($this->params['num']) ? $this->params['num'] : 0;
     echo $num;
     if(!$id || $num === null) return '';
-      
+
       $res = $this->db->query("update `cards` as c set c.status= $num WHERE c.id = $id");
       return $res;
   }
-  
+
 }
-
-
