@@ -2,7 +2,6 @@
 //--- Ядро сайта ---//
 //ob_start();
 //session_start();
-
 define('H', $_SERVER['DOCUMENT_ROOT'] . '/');
 
 // Подключаем файл с настройками
@@ -14,29 +13,18 @@ spl_autoload_register(function($className) {
 	$fileName = stream_resolve_include_path(
 		strtr(ltrim($className, '\\'), '\\', '/').'.php'
 	);
-	
+
 	if ($fileName) {
 		require_once $fileName;
 	}
 });
 
-
- $db = Mysql\Client::init( $dbuser, $dbpassword)
- ->defaultDb($db_name)
- ->charset('utf8');
-
-
-
-
-     
-
- 
-
-
-
-
-
-
-
-	
-
+$errordb = '';
+try {
+	$db = Mysql\Client::init( $dbuser, $dbpassword,'localhost',3306,false)
+  ->defaultDb($db_name)
+  ->charset('utf8');
+}
+catch (\Exception $e) {
+	$errordb = $e->getMessage();
+}

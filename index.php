@@ -4,6 +4,7 @@ error_reporting(E_ALL);
 
 require_once('core.php');
 
+if($errordb) exit($errordb);
 
 $request = $_SERVER['REQUEST_URI'];
 $params='';
@@ -42,6 +43,7 @@ switch ($request) {
 if(class_exists($controller)) $controller = new $controller;
 else  { header('HTTP/1.0 404 Not Found', true, 404); die; }
 $controller->db = $db;
+
 if($params) $controller->params = explode('&',$params);
 if(method_exists($controller,'before')) $controller->before();
 if(isset($_SERVER['HTTP_X_REQUESTED_WITH']) && !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
@@ -52,5 +54,5 @@ if(isset($_SERVER['HTTP_X_REQUESTED_WITH']) && !empty($_SERVER['HTTP_X_REQUESTED
 }
 
 
-require('index.html');
+require('view.php');
 exit();
